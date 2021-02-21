@@ -2,7 +2,7 @@ all: new-except
 
 
 new-except: new-except.cpp
-	g++ -static  -g -O -o new-except -O new-except.cpp
+	g++ -static -O -g -o new-except new-except.cpp
 
 run: new-except
 	(./new-except)
