@@ -20,6 +20,13 @@ void printb(int bits, int num, char * const post)
    printf (post);
 }
 
+void printlb(int bits, long num, char * const post)
+{
+   int i;
+   for (i=bits-1; i >= 0; i--)
+      printf ("%c", (num & (1<<i)) ? '1' : '0');
+   printf (post);
+}
 
 void to_fixed_number(float f, int integer_bits, int fraction_bits,
                      int * sign, int * integer, int * fraction)
@@ -47,15 +54,27 @@ void to_fixed_number(float f, int integer_bits, int fraction_bits,
            int shift = 23-(fl.ieee.exponent - IEEE754_FLOAT_BIAS);
            //integer = mantissa >>
            //        (24-integer_bits+(fl.ieee.exponent-IEEE754_FLOAT_BIAS));
-           *integer = mantissa >> shift;
-           if (*integer > integer_mask) printf ("overflow ");
-           *integer &= integer_mask;
-           //int fraction1 = mantissa &
+	   if (shift > 31) *integer = 0;
+	   else *integer = mantissa >> shift;
+           if (*integer > integer_mask) {
+	      printf ("\n   overflow(");
+	      printb(32, mantissa, ", ");
+	      printb(32, shift, "\n            ");
+	      printb(32, *integer, ", ");
+	      printb(32, integer_mask, ")\n");
+	      *integer = integer_mask;
+	      *fraction = fraction_mask;
+	   }
+	   else {
+              *integer &= integer_mask;
+              //int fraction1 = mantissa &
                      //(fraction_mask << (23 - integer_bits - fraction_bits));
-           //fraction = fraction1 >> fraction_bits;
-           int shift_fract = shift - fraction_bits;
-           *fraction = mantissa >> shift_fract;
-           *fraction &= fraction_mask;
+              //fraction = fraction1 >> fraction_bits;
+              int shift_fract = shift - fraction_bits;
+	      if (shift_fract > 31) *fraction = 0;
+              else *fraction = mantissa >> shift_fract;
+              *fraction &= fraction_mask;
+	   }
         }
 }
 
@@ -95,6 +114,11 @@ void display_number(int sign, int integer_bits, int integer,
 	    printb (23, fl.ieee.mantissa, " ");
 
 	    printf ("%.10f\n", fl.f);
+
+	    long long_mantissa = (integer << fraction_bits) | fraction;
+            if (sign) long_mantissa = 0-long_mantissa;
+            printf ("fixed: ");
+            printlb(1 + integer_bits + fraction_bits, long_mantissa, "\n");
 }
 
 #define INTEGER_BITS 2
