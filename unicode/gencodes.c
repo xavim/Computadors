@@ -14,7 +14,7 @@
 int main(int argc, char * argv[])
 {
    int res, i;
-   int from = 0x1fbf0, to = 0x1fbf9;
+   int from = 0xc3c0, to = 0xc3df;
 
    if (argc == 3) {
 	  from = strtol(argv[1], NULL, 0);

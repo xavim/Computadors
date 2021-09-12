@@ -15,6 +15,9 @@ int main()
 
    unsigned int unicode;
    unsigned char c0, c1, c2, c3;
+//printf ("%c%c%c", 0xef, 0xbb, 0xbf);
+//   printf ("Please, enter unicode characters with the format U+XYZT...\n");
+//   printf ("(where X, Y, Z, T... are up to 8 hexadecimal digits)\n");
 
    res = scanf("U+%x\n", &unicode);
    if (res == 0) printf ("No input...\n");
