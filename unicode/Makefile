@@ -9,6 +9,8 @@ genchars: genchars.c
 clean:
 	rm -f gencodes genchars
 
+# https://www.fileformat.info/info/unicode/char/00C1/index.htm
+
 gen-greekchars:gencodes genchars
 	./gencodes 0xceb0 0xcebf | ./genchars >chars2.out
 	./gencodes 0xce90 0xce9f | ./genchars >>chars2.out
